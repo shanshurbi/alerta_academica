@@ -1,7 +1,7 @@
 # core/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Estudiante, Alerta
-from .ia_modelo import predecir_riesgo # Importamos nuestra función de IA
+from .modelo_ia import predecir_riesgo # <-- ¡CORRECCIÓN A modelo_ia!
 
 # 1. Función para mostrar el Dashboard (Ruta: /)
 def dashboard(request):
