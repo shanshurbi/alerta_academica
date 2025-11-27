@@ -61,3 +61,50 @@ def generar_alerta(request, estudiante_id):
 
     # 5. Redirigir al dashboard para ver el resultado
     return redirect('dashboard')
+
+# Nueva Vista 1: Lista de Asistencia (Ruta: /docente/asistencia/)
+def lista_asistencia_docente(request):
+    """
+    Muestra la lista de estudiantes con sus asistencias actuales
+    para que el docente pueda editar.
+    """
+    estudiantes = Estudiante.objects.all().order_by('nombre')
+    context = {
+        'estudiantes': estudiantes,
+        'titulo': 'Panel de Asistencia del Docente'
+    }
+    return render(request, 'docente_asistencia.html', context)
+
+
+# Nueva Vista 2: Edición de Asistencia (Ruta: /docente/asistencia/editar/<id>/)
+def editar_asistencia_docente(request, estudiante_id):
+    """
+    Permite al docente editar la asistencia de un estudiante específico.
+    """
+    estudiante = get_object_or_404(Estudiante, pk=estudiante_id)
+
+    if request.method == 'POST':
+        # La asistencia viene del formulario como texto (request.POST['asistencia'])
+        try:
+            nueva_asistencia = float(request.POST['asistencia'])
+            
+            # Validación simple: debe estar entre 0.0 y 1.0
+            if 0.0 <= nueva_asistencia <= 1.0:
+                estudiante.asistencia = nueva_asistencia
+                # Guardar el estudiante dispara la SIGNAL, generando la ALERTA automática.
+                estudiante.save() 
+                
+                # Redirigir de vuelta a la lista para ver los cambios
+                return redirect('lista_asistencia')
+            else:
+                # Si la validación falla, podemos manejar el error o simplemente recargar.
+                pass 
+        except ValueError:
+             # Manejar si el input no es un número
+             pass
+
+    context = {
+        'estudiante': estudiante,
+        'titulo': f"Editar Asistencia de {estudiante.nombre}"
+    }
+    return render(request, 'docente_editar_asistencia.html', context)
