@@ -1,0 +1,15 @@
+# .gitignore
+
+# Entorno Virtual
+venv/
+
+# Archivos de Python
+__pycache__/
+*.pyc
+
+# Base de datos SQLite (OBLIGATORIO)
+db.sqlite3
+
+# Archivos específicos de Django
+/media
+/static_collected
